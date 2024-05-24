@@ -19,7 +19,7 @@ public class MqttInputConfiguration {
 
     @Bean
     public MessageProducer inbound() {
-        var adapter = new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "server", "topic/#");
+        var adapter = new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "server", "#");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
