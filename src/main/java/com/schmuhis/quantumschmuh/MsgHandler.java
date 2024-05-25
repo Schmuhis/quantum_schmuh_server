@@ -13,9 +13,13 @@ public class MsgHandler {
 
     private final Logger log;
 
+    private final GameService gameService;
+
     public void handle(Message<?> message) {
         var headers = message.getHeaders();
         var topic = headers.get("mqtt_receivedTopic");
+
+        log.info("message payload {}", message.getPayload());
 
         if (!(topic instanceof String s)) return;
 
@@ -23,11 +27,6 @@ public class MsgHandler {
 
         if (!topics.getFirst().equals("server")) {
             log.info("not a message for server {}", topic);
-            return;
-        }
-
-        if (topics.size() != 3) {
-            log.info("server can not comprehend topic {}", topic);
             return;
         }
 
@@ -40,11 +39,9 @@ public class MsgHandler {
         }
 
         switch (topics.get(2)) {
-            case "update-spot" -> System.out.println("spot will be updated for " + player);
-            case "rolled-die" -> System.out.println("rolled die for " + player);
+            case "update-spot" -> gameService.updateSpot(player);
+            case "rolli" -> gameService.dieRoll();
             case String command -> log.warn("unknown command: {}", command);
         }
-
-        System.out.println(topic);
     }
 }
